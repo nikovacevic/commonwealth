@@ -27,8 +27,13 @@ var routes = Routes{
 // NewRouter returns a new gorilla/mux Router
 func NewRouter() *mux.Router {
 	r := mux.NewRouter()
+	// Register routes defined in routes
 	for _, route := range routes {
 		r.HandleFunc(route.Path, Log(route.HandlerFunc))
 	}
+	// Register route for static files
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
+	// Register special assets
+	r.HandleFunc("/favicon.ico", http.NotFound)
 	return r
 }
