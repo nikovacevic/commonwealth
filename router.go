@@ -20,7 +20,12 @@ var routes = Routes{
 	Route{
 		"GET",
 		"/",
-		Index,
+		index,
+	},
+	Route{
+		"GET",
+		"/login",
+		login,
 	},
 }
 
