@@ -34,12 +34,31 @@
     <main>
       <div class="container">
         <div class="row">
-          <div class="col-xs-12">
-            {{ if . }}
-              <p>{{ .ID }}: {{ .FirstName }} {{ .LastName }}</p>
+          <div class="col-xs-12 col-md-6 col-md-offset-3">
+            {{ if .User }}
+              <p>{{ .User.ID }}: {{ .User.FirstName }} {{ .User.LastName }}</p>
             {{ else }}
-              <a href="/login" class="btn btn-default">Log in</a>
-              <a href="/register" class="btn btn-default">Sign up</a>
+              <form method="post">
+                <div class="form-group">
+                  <label for="first_name">First name</label>
+                  <input type="text" name="first_name" value="" class="form-control" id="first_name">
+                </div>
+                <div class="form-group">
+                  <label for="last_name">Last name</label>
+                  <input type="text" name="last_name" value="" class="form-control" id="last_name">
+                </div>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="text" name="email" value="" class="form-control" id="email">
+                </div>
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <input type="password" name="password" value="" class="form-control" id="password">
+                </div>
+                <div class="form-group">
+                  <input type="submit" name="submit" value="Sign up" class="btn btn-default">
+                </div>
+              </form>
             {{ end }}
           </div>
         </div>
