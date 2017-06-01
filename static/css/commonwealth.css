@@ -1,0 +1,55 @@
+/* Structure */
+
+/* HTML and Body */
+html {
+  display: flex;
+  flex-flow: column;
+  margin: 0;
+  min-height: 100%;
+  padding: 0;
+}
+body {
+  display: flex;
+  flex: 1 0 auto;
+  flex-flow: column;
+  margin: 0;
+  padding: 0;
+}
+
+/* Header */
+header {
+  flex: 0 0 auto;
+}
+
+/* Main */
+main {
+  flex: 1 0 auto;
+}
+
+/* Footer */
+footer {
+  flex: 0 0 auto;
+  margin: 20px 0 30px 0;
+}
+ul.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+ul.footer-links>li {
+  padding-bottom: 6px;
+}
+footer div.footer-copy {
+  margin-top: 10px;
+}
+
+/* Typography */
+.light {
+  color: #777;
+  font-weight: 200;
+  letter-spacing: 0.15px;
+}
+.small {
+  font-size: 0.86em;
+  letter-spacing: 0.25px;
+}
