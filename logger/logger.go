@@ -12,7 +12,7 @@ func LogRequest(hf http.HandlerFunc) http.HandlerFunc {
 		start := time.Now()
 		hf(w, r)
 		log.Printf(
-			"%s\t%s\t%s",
+			"%-6s\t%-30s\t%s",
 			r.Method,
 			r.RequestURI,
 			time.Since(start),
