@@ -1,13 +1,15 @@
 package handlers
 
 import (
-	"encoding/binary"
-	"encoding/json"
+	"context"
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/boltdb/bolt"
+	_ "github.com/lib/pq"
+	"github.com/nikovacevic/commonwealth/auth"
 	"github.com/nikovacevic/commonwealth/models"
 	"github.com/nikovacevic/commonwealth/sessions"
 )
@@ -40,68 +42,66 @@ func GETRegister(w http.ResponseWriter, r *http.Request) {
 
 // POSTRegister POST /register
 func POSTRegister(w http.ResponseWriter, r *http.Request) {
-	db, err := bolt.Open("boltdb/session.db", 0600, nil)
+	// BoltDB for Session persistence
+	bdb, err := bolt.Open("boltdb/session.db", 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer bdb.Close()
+
+	// Postgres for non-Session persistence
+	db, err := sql.Open("postgres", "postgres://niko:@localhost/commonwealth?sslmode=disable")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	// TODO Check already logged in
+	// Is Postgres working?
+	// TODO Remove
+	err = db.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Connected to postgres")
+
+	// TODO Check if already logged in
 
 	firstName := r.FormValue("first_name")
 	lastName := r.FormValue("last_name")
 	email := r.FormValue("email")
+	phone := r.FormValue("phone")
+	organization := r.FormValue("organization")
 	password := r.FormValue("password")
+
+	hash, err := auth.HashPassword([]byte(password))
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	user := models.User{
 		FirstName:    firstName,
 		LastName:     lastName,
 		Email:        email,
-		PasswordHash: password,
+		Phone:        phone,
+		Organization: organization,
+		PasswordHash: string(hash),
 	}
 
-	/*
-		// TODO Check for unique email
-		err = db.View(func(tx *bolt.Tx) error {
-			userBkt := tx.Bucket([]byte("user"))
-			data := userBkt.Get([]byte(user.Email))
-			if data != nil {
-				return &emailTakenError{user.Email}
-			}
-			return nil
-		})
-		switch err := err.(type) {
-		case nil:
-			// Email is available, so continue
-		case *emailTakenError:
-			// TODO send back to form with values
-			log.Printf(err.Error())
-			http.Redirect(w, r, "/register", http.StatusSeeOther)
-		default:
-			log.Fatal(err)
-		}
-	*/
+	log.Printf("User: %v\n", user)
 
-	err = db.Update(func(tx *bolt.Tx) error {
-		userBkt := tx.Bucket([]byte("user"))
-		user.ID, err = userBkt.NextSequence()
-		data, er := json.Marshal(user)
-		if er != nil {
-			return er
-		}
-		b := make([]byte, 8)
-		binary.LittleEndian.PutUint64(b, user.ID)
-		er = userBkt.Put(b, data)
-		if er != nil {
-			return er
-		}
-		return nil
-	})
+	ctx := context.Background()
+	stmt, err := db.PrepareContext(ctx, "INSERT INTO users (first_name, last_name, email, phone, organization, password_hash) VALUES ($1, $2, $3, $4, $5, $6)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	result, err := stmt.ExecContext(ctx, user.FirstName, user.LastName, user.Email, user.Phone, user.Organization, user.PasswordHash)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	s := sessions.NewSession(w, user.ID, db)
+	log.Println(result)
+
+	s := sessions.NewSession(w, user.ID, bdb)
 	if s == nil {
 		log.Println("auth.go\t110\tFailed to create session")
 	}
