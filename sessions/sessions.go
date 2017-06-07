@@ -1,7 +1,8 @@
 package sessions
 
 import (
-	"encoding/binary"
+	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -47,7 +48,7 @@ func init() {
 
 // GetUser attempts to find User's Session based on the session cookie in the
 // Request. Returns the User if successful, nil if unsuccessful.
-func GetUser(w http.ResponseWriter, r *http.Request, bdb *bolt.DB) *models.User {
+func GetUser(w http.ResponseWriter, r *http.Request, bdb *bolt.DB, db *sql.DB) *models.User {
 	var user *models.User
 	var session *Session
 
@@ -79,26 +80,15 @@ func GetUser(w http.ResponseWriter, r *http.Request, bdb *bolt.DB) *models.User 
 		return nil
 	}
 
+	ctx := context.Background()
+	user = &models.User{}
 	// Retrieve User from Session
-	// Retrieve session from DB
-	err = bdb.View(func(tx *bolt.Tx) error {
-		userBkt := tx.Bucket([]byte("user"))
-		b := make([]byte, 8)
-		binary.LittleEndian.PutUint64(b, session.UserID)
-		data := userBkt.Get(b)
-		if data == nil {
-			return nil
-		}
-		user = &models.User{}
-		err = json.Unmarshal(data, user)
-		if err != nil {
-			return err
-		}
-		return nil
-	})
+	row := db.QueryRowContext(ctx, "SELECT u.id, u.first_name, u.last_name, u.email, u.phone, u.organization, u.create_date FROM users AS u WHERE id = $1;", session.UserID)
+	err = row.Scan(&(user.ID), &(user.FirstName), &(user.LastName), &(user.Email), &(user.Phone), &(user.Organization), &(user.CreateDate))
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	if user == nil {
 		log.Fatal(fmt.Errorf("Session %v exists for non-existent User ID %v", session.ID, session.UserID))
 	}
@@ -108,7 +98,6 @@ func GetUser(w http.ResponseWriter, r *http.Request, bdb *bolt.DB) *models.User 
 
 // NewSession creates and stores a session cookie (sid)
 func NewSession(w http.ResponseWriter, userID uint64, bdb *bolt.DB) *Session {
-	// TODO New with claims?
 	secret := []byte("7D72E7C2E630EE763C2E7A1AEB3F2035A0227E8C66C1F3EFC64")
 	token := jwt.New(jwt.SigningMethodHS256)
 	signedToken, err := token.SignedString(secret)
