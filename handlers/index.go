@@ -1,33 +1,39 @@
 package handlers
 
 import (
-	"database/sql"
+	"context"
 	"log"
 	"net/http"
 
-	"github.com/boltdb/bolt"
-	"github.com/nikovacevic/commonwealth/sessions"
+	"github.com/nikovacevic/commonwealth/models"
 )
 
+// TODO Something like this
+// var userService *services.UserService
+
+func init() {
+	// TODO Something like this
+	// userService = services.GetUserService(hdl.db)
+}
+
 // GETIndex GET /
-func GETIndex(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
+func (hdl *Handler) GETIndex(w http.ResponseWriter, r *http.Request) {
+	var user *models.User
 
-	// Open session DB
-	bdb, err := bolt.Open("boltdb/session.db", 0600, nil)
-	if err != nil {
-		log.Fatal(err)
+	uid := sess.GetUserID(r)
+
+	if uid > 0 {
+		// TODO Something like this
+		// user, err := userService.GetUserById(uid)
+
+		// Find user for given email
+		user = &models.User{ID: uid}
+		ctx := context.Background()
+		row := hdl.db.QueryRowContext(ctx, "SELECT u.first_name, u.last_name, u.email, u.phone, u.organization FROM users AS u WHERE u.id = $1;", uid)
+		if err := row.Scan(&(user.FirstName), &(user.LastName), &(user.Email), &(user.Phone), &(user.Organization)); err != nil {
+			log.Fatal(err)
+		}
 	}
-	defer bdb.Close()
 
-	// Postgres for non-Session persistence
-	db, err := sql.Open("postgres", "postgres://niko:@localhost/commonwealth?sslmode=disable")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-
-	user := sessions.GetUser(w, r, bdb, db)
-
-	tpl.ExecuteTemplate(w, "index.gohtml", user)
+	hdl.Render(w, "index.gohtml", user)
 }
