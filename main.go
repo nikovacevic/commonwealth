@@ -65,8 +65,11 @@ func NewRouter(h *handlers.Handler) *mux.Router {
 		r.HandleFunc(route.Path, fn).Methods(route.Method)
 	}
 
+	// Register error routes
+	r.NotFoundHandler = logger.LogError("404", http.HandlerFunc(h.NotFound))
+
 	// Register route for static files
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
+	r.PathPrefix("/static/").Handler(http.FileServer(http.Dir(".")))
 
 	// Register special assets
 	r.HandleFunc("/favicon.ico", http.NotFound)
