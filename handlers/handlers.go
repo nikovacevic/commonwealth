@@ -26,7 +26,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	tpl := template.Must(template.ParseGlob("templates/*"))
+	tpl := template.Must(template.ParseGlob("views/*"))
 
 	hdl = &Handler{
 		db:  db,
