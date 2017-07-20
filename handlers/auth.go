@@ -9,6 +9,7 @@ import (
 	_ "github.com/lib/pq" // postgres driver
 	"github.com/nikovacevic/commonwealth/auth"
 	"github.com/nikovacevic/commonwealth/models"
+	"github.com/nikovacevic/commonwealth/views"
 )
 
 type emailTakenError struct {
@@ -19,9 +20,12 @@ func (ete *emailTakenError) Error() string {
 	return fmt.Sprintf("Email address %s has already been taken", ete.email)
 }
 
+var loginView = views.NewView("default", "views/login.gohtml")
+var registerView = views.NewView("default", "views/register.gohtml")
+
 // GETLogin GET /login
 func (hdl *Handler) GETLogin(w http.ResponseWriter, r *http.Request) {
-	hdl.Render(w, "login.gohtml", nil)
+	loginView.Render(w, nil)
 }
 
 // POSTLogin POST /login
@@ -55,7 +59,7 @@ func (hdl *Handler) POSTLogin(w http.ResponseWriter, r *http.Request) {
 
 // GETRegister GET /register
 func (hdl *Handler) GETRegister(w http.ResponseWriter, r *http.Request) {
-	hdl.Render(w, "register.gohtml", nil)
+	registerView.Render(w, nil)
 }
 
 // POSTRegister POST /register
@@ -89,6 +93,7 @@ func (hdl *Handler) POSTRegister(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	result, err := stmt.ExecContext(ctx, user.FirstName, user.LastName, user.Email, user.Phone, user.Organization, user.PasswordHash)
+	log.Println(result)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -2,9 +2,7 @@ package handlers
 
 import (
 	"database/sql"
-	"html/template"
 	"log"
-	"net/http"
 
 	"github.com/nikovacevic/commonwealth/sessions"
 )
@@ -12,8 +10,7 @@ import (
 // Handler receives all app-specific HandlerFunctions, embedding the app's
 // database connection pool and templates.
 type Handler struct {
-	db  *sql.DB
-	tpl *template.Template
+	db *sql.DB
 }
 
 var hdl *Handler
@@ -26,12 +23,8 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	tpl := template.Must(template.ParseGlob("views/*"))
 
-	hdl = &Handler{
-		db:  db,
-		tpl: tpl,
-	}
+	hdl = &Handler{db: db}
 
 	sess = sessions.GetSessionHandler()
 }
@@ -39,13 +32,4 @@ func init() {
 // GetHandler returns the initialized Handler
 func GetHandler() *Handler {
 	return hdl
-}
-
-// Render writes a template--with or without data--to a HTTP ResponseWriter
-func (hdl *Handler) Render(w http.ResponseWriter, name string, data interface{}) {
-	// TODO Allow this to be given as argument
-	// Set headers
-	w.Header().Set("Content-Type", "text/html")
-	// Execute template
-	hdl.tpl.ExecuteTemplate(w, name, data)
 }

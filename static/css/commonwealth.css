@@ -23,7 +23,29 @@ header {
 
 /* Main */
 main {
+  display: flex;
   flex: 1 0 auto;
+}
+
+div.flex {
+  display: flex;
+}
+div.flex.flex-row {
+  flex-flow: row;
+}
+div.flex.flex-col {
+  flex-flow: column;
+}
+div.flex.flex-center {
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+}
+div.flex-grow {
+  flex: 1 0 auto;
+}
+div.flex-shrink {
+  flex: 0 1 auto;
 }
 
 /* Footer */

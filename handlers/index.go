@@ -6,15 +6,10 @@ import (
 	"net/http"
 
 	"github.com/nikovacevic/commonwealth/models"
+	"github.com/nikovacevic/commonwealth/views"
 )
 
-// TODO Something like this
-// var userService *services.UserService
-
-func init() {
-	// TODO Something like this
-	// userService = services.GetUserService(hdl.db)
-}
+var indexView = views.NewView("default", "views/index.gohtml")
 
 // GETIndex GET /
 func (hdl *Handler) GETIndex(w http.ResponseWriter, r *http.Request) {
@@ -35,5 +30,5 @@ func (hdl *Handler) GETIndex(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	hdl.Render(w, "index.gohtml", user)
+	indexView.Render(w, user)
 }
