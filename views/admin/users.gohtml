@@ -1,0 +1,31 @@
+{{ define "yield" }}
+<div class="container">
+  <!-- Breadcrumb -->
+  <div class="row">
+    <div class="col-xs-12">
+      <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li><a href="/admin">Admin</a></li>
+        <li class="active">Users</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      {{ range .Users }}
+      <div class="row">
+        <div class="col-sm-12">
+          <a href="/admin/users/{{ .ID }}" class="list-el">
+            <div class="row" style="">
+              <div class="col-sm-4">{{ .FirstName }} {{ .LastName }}</div>
+              <div class="col-sm-4">{{ .Email }}</div>
+              <div class="col-sm-4">{{ .Organization }}</div>
+            </div>
+          </a>
+        </div>
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</div>
+{{ end }}

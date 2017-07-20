@@ -1,70 +1,11 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Commonwealth Coffee</title>
-    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/css/commonwealth.css">
-  </head>
-  <body>
-    <header>
-      <nav class="navbar navbar-default">
-        <div class="container">
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">Commonwealth Coffee</a>
-          </div>
-          <div id="navbar" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav navbar-right">
-              <li><a href="/">Home</a></li>
-              <li><a href="/contact">Contact</a></li>
-              <li><a href="/login">Log in</a></li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </header>
-    <main>
-      <div class="container">
-        <div class="row">
-          <div class="col-xs-12 text-center">
-            <h1>Oops!</h1>
-            <p>We couldn't find the page you requested.</p>
-            <p class="light small">HTTP 404: Not Found</p>
-          </div>
-        </div>
-      </div>
-    </main>
-    <footer>
-      <div class="container">
-        <div class="row">
-            <div class="col-sm-4">
-              <h4>Commonwealth Coffee</h4>
-              <p>is a coffee roasting company based out of Denver, Colorado</p>
-            </div>
-            <div class="col-sm-4">
-              <ul class="footer-links">
-                <li><a href="/">Home</a></li>
-                <li><a href="/">Contact</a></li>
-              </ul>
-            </div>
-            <div class="col-sm-4">
-              <div class="footer-copy">
-                <p class="light">&copy; Commonwealth Coffee Co. 2017</p>
-                <p class="light small">Design &amp; Development by Niko Kovacevic</p>
-              </div>
-            </div>
-        </div>
-      </div>
-    </footer>
-  </body>
-  <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-  <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
-</html>
+{{ define "yield" }}
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 text-center">
+      <h1>Oops!</h1>
+      <p>We couldn't find the page you requested.</p>
+      <p class="light small">HTTP 404: Not Found</p>
+    </div>
+  </div>
+</div>
+{{ end }}

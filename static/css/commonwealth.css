@@ -23,7 +23,6 @@ header {
 
 /* Main */
 main {
-  display: flex;
   flex: 1 0 auto;
 }
 
@@ -51,7 +50,9 @@ div.flex-shrink {
 /* Footer */
 footer {
   flex: 0 0 auto;
-  margin: 20px 0 30px 0;
+  margin-top: 20px;
+  border-top: 2px dotted #EEE;
+  padding: 30px 0 40px 0;
 }
 ul.footer-links {
   list-style: none;
@@ -74,4 +75,23 @@ footer div.footer-copy {
 .small {
   font-size: 0.86em;
   letter-spacing: 0.25px;
+}
+.pad-left {
+  padding-left: 12px;
+}
+.pad-right {
+  padding-right: 12px;
+}
+
+/* Elements */
+a.list-el {
+  display: block;
+  padding: 8px 15px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+a.list-el:hover {
+  background: #FCFCFC;
+  border: 1px solid #DDD;
+  text-decoration: none;
 }

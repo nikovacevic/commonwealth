@@ -42,6 +42,7 @@ func NewView(layout string, files ...string) *View {
 
 // Render writes a View to an HTTP response.
 func (v *View) Render(w http.ResponseWriter, data interface{}) error {
+	log.Println(data)
 	return v.Template.ExecuteTemplate(w, v.Layout, data)
 }
 

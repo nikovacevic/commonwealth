@@ -1,0 +1,25 @@
+{{ define "yield" }}
+<div class="container">
+  <!-- Breadcrumb -->
+  <div class="row">
+    <div class="col-xs-12">
+      <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li class="active">Admin</li>
+      </ol>
+    </div>
+  </div>
+  <!-- Menu nav -->
+  <div class="row">
+    <div class="col-xs-12 col-md-4">
+      <ul class="nav nav-pills nav-stacked">
+        <li role="presentation">
+          <a href="/admin/users">
+            <span class="pad-right glyphicon glyphicon-user"></span>Users
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+{{ end }}

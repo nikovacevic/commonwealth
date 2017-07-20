@@ -58,6 +58,17 @@ func NewRouter(h *handlers.Handler) *mux.Router {
 			"/register",
 			h.POSTRegister,
 		},
+		// Admin
+		Route{
+			"GET",
+			"/admin",
+			h.GETAdminIndex,
+		},
+		Route{
+			"GET",
+			"/admin/users",
+			h.GETAdminUsers,
+		},
 	}
 
 	for _, route := range routes {
