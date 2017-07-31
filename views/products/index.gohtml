@@ -1,0 +1,42 @@
+{{ define "yield" }}
+<div class="container">
+  <!-- Breadcrumb -->
+  <div class="row">
+    <div class="col-xs-12">
+      <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li><a href="/admin">Admin</a></li>
+        <li class="active">Products</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <!-- Control panel -->
+    <div class="col-xs-12 col-md-3">
+      <div class="control-panel">
+        <a href="/products/create" class="btn btn-default">Create a product</a>
+      </div>
+    </div>
+    <!-- List of products -->
+    <div class="col-xs-12 col-md-9">
+      {{ range .Products }}
+      <div class="row">
+        <div class="col-sm-12">
+          <a href="/products/{{ .ID }}" class="list-el">
+            <div class="row" style="">
+              <div class="col-xs-1">
+                {{ if .IsActive }}
+                  <span class="glyphicon glyphicon-ok"></span>
+                {{ end }}
+              </div>
+              <div class="col-xs-8">{{ .Name }}</div>
+              <div class="col-sm-3 text-right">{{ printf "$%.2f" .Price }}</div>
+            </div>
+          </a>
+        </div>
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</div>
+{{ end }}

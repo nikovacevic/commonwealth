@@ -20,8 +20,8 @@ func (ete *emailTakenError) Error() string {
 	return fmt.Sprintf("Email address %s has already been taken", ete.email)
 }
 
-var loginView = views.NewView("default", "views/login.gohtml")
-var registerView = views.NewView("default", "views/register.gohtml")
+var loginView = views.NewView("default", "views/auth/login.gohtml")
+var registerView = views.NewView("default", "views/auth/register.gohtml")
 
 // GETLogin GET /login
 func (hdl *Handler) GETLogin(w http.ResponseWriter, r *http.Request) {

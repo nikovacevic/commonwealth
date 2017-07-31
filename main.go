@@ -62,12 +62,29 @@ func NewRouter(h *handlers.Handler) *mux.Router {
 		Route{
 			"GET",
 			"/admin",
-			h.GETAdminIndex,
+			h.GETAdmin,
+		},
+		// Users
+		Route{
+			"GET",
+			"/users",
+			h.GETUsers,
+		},
+		// Products
+		Route{
+			"GET",
+			"/products",
+			h.GETProducts,
 		},
 		Route{
 			"GET",
-			"/admin/users",
-			h.GETAdminUsers,
+			"/products/create",
+			h.GETProductsCreate,
+		},
+		Route{
+			"POST",
+			"/products/create",
+			h.POSTProductsCreate,
 		},
 	}
 

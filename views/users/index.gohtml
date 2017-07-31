@@ -12,10 +12,11 @@
   </div>
   <div class="row">
     <div class="col-xs-12">
+      <!-- User list -->
       {{ range .Users }}
       <div class="row">
         <div class="col-sm-12">
-          <a href="/admin/users/{{ .ID }}" class="list-el">
+          <a href="/users/{{ .ID }}" class="list-el">
             <div class="row" style="">
               <div class="col-sm-4">{{ .FirstName }} {{ .LastName }}</div>
               <div class="col-sm-4">{{ .Email }}</div>
