@@ -38,7 +38,6 @@ func (hdl *Handler) GETAdminUsers(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 		users = append(users, user)
-		log.Println(user.FirstName)
 	}
 
 	adminUsersView.Render(w, struct {

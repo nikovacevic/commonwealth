@@ -93,7 +93,6 @@ func (hdl *Handler) POSTRegister(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	result, err := stmt.ExecContext(ctx, user.FirstName, user.LastName, user.Email, user.Phone, user.Organization, user.PasswordHash)
-	log.Println(result)
 	if err != nil {
 		log.Fatal(err)
 	}
