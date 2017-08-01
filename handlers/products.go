@@ -76,7 +76,7 @@ func (hdl *Handler) POSTProductsCreate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := context.Background()
-	stmt, err := hdl.db.PrepareContext(ctx, "INSERT INTO products (description, name, price, cost, is_active) VALUES ($1, $2, $3, $4, $5)")
+	stmt, err := hdl.db.PrepareContext(ctx, "INSERT INTO products (description, name, price, cost, is_active) VALUES ($1, $2, $3, $4, $5) RETURNING id")
 	if err != nil {
 		log.Fatal(err)
 	}

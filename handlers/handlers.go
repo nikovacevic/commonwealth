@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/nikovacevic/commonwealth/services"
 	"github.com/nikovacevic/commonwealth/sessions"
 )
 
@@ -25,6 +26,8 @@ func init() {
 	}
 
 	hdl = &Handler{db: db}
+
+	userService = services.NewUser(hdl.db)
 
 	sess = sessions.GetSessionHandler()
 }

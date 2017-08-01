@@ -95,3 +95,9 @@ a.list-el:hover {
   border: 1px solid #DDD;
   text-decoration: none;
 }
+
+.control-panel {}
+.control-panel .btn {
+  width: 100%;
+  margin-bottom: 8px;
+}

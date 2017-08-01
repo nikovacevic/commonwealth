@@ -5,10 +5,7 @@ import (
 	"net/http"
 
 	"github.com/nikovacevic/commonwealth/models"
-	"github.com/nikovacevic/commonwealth/views"
 )
-
-var usersView = views.NewView("default", "views/users/index.gohtml")
 
 // GETUsers GET /admin/users
 func (hdl *Handler) GETUsers(w http.ResponseWriter, r *http.Request) {
