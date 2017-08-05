@@ -19,13 +19,13 @@ var viewProductView = views.NewView("default", "views/products/view.gohtml")
 
 // Products serves a listing of all products
 func (hdl *Handler) Products(w http.ResponseWriter, r *http.Request) {
-	rows, err := hdl.db.Query("SELECT id, description, is_active, name, price FROM products")
+	rows, err := hdl.db.Query("SELECT id, description, is_active, name, price FROM products WHERE is_active;")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 
-	products := make([]*models.Product, 0)
+	activeProducts := make([]*models.Product, 0)
 	for rows.Next() {
 		product := &models.Product{}
 		err := rows.Scan(
@@ -38,13 +38,37 @@ func (hdl *Handler) Products(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		products = append(products, product)
+		activeProducts = append(activeProducts, product)
+	}
+
+	rows, err = hdl.db.Query("SELECT id, description, is_active, name, price FROM products WHERE NOT is_active;")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	inactiveProducts := make([]*models.Product, 0)
+	for rows.Next() {
+		product := &models.Product{}
+		err := rows.Scan(
+			&product.ID,
+			&product.Description,
+			&product.IsActive,
+			&product.Name,
+			&product.Price,
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+		inactiveProducts = append(inactiveProducts, product)
 	}
 
 	productsView.Render(w, struct {
-		Products []*models.Product
+		ActiveProducts   []*models.Product
+		InactiveProducts []*models.Product
 	}{
-		products,
+		activeProducts,
+		inactiveProducts,
 	})
 }
 

@@ -13,23 +13,33 @@
     <!-- Control panel -->
     <div class="col-xs-12 col-md-3">
       <div class="control-panel">
+        <div class="hidden-xs" style="padding-top: 24px"></div>
         <a href="/products/create" class="btn btn-default">Create a product</a>
       </div>
     </div>
     <!-- List of products -->
     <div class="col-xs-12 col-md-9">
-      {{ range .Products }}
+      <h3>Active products</h3>
+      {{ range .ActiveProducts }}
       <div class="row">
         <div class="col-sm-12">
           <a href="/products/{{ .ID }}" class="list-el">
             <div class="row" style="">
-              <div class="col-xs-1">
-                {{ if .IsActive }}
-                  <span class="glyphicon glyphicon-ok"></span>
-                {{ end }}
-              </div>
               <div class="col-xs-8">{{ .Name }}</div>
-              <div class="col-sm-3 text-right">{{ .Price }}</div>
+              <div class="col-sm-4 text-right">$ {{ .Price }}</div>
+            </div>
+          </a>
+        </div>
+      </div>
+      {{ end }}
+      <h3>Inactive products</h3>
+      {{ range .InactiveProducts }}
+      <div class="row">
+        <div class="col-sm-12">
+          <a href="/products/{{ .ID }}" class="list-el">
+            <div class="row" style="">
+              <div class="col-xs-8">{{ .Name }}</div>
+              <div class="col-sm-4 text-right">$ {{ .Price }}</div>
             </div>
           </a>
         </div>

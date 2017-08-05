@@ -1,12 +1,22 @@
 {{ define "yield" }}
 <div class="container">
   <div class="row">
-    <div class="col-xs-12">
+    <div class="col-xs-12 col-md-3">
+      <div class="control-panel">
+        <div class="hidden-xs" style="padding-top: 24px"></div>
+        {{ if . }}
+          <a href="/logout" class="btn btn-default">Log out</a>
+        {{ else }}
+          <a href="/login" class="btn btn-default">Log in</a>
+          <a href="/register" class="btn btn-default">Sign up</a>
+        {{ end }}
+      </div>
+    </div>
+    <div class="col-xs-12 col-md-9">
       {{ if . }}
-        <p>{{ .ID }}: {{ .FirstName }} {{ .LastName }}</p>
+        <h2>Welcome, {{ .FirstName }}!</h2>
       {{ else }}
-        <a href="/login" class="btn btn-default">Log in</a>
-        <a href="/register" class="btn btn-default">Sign up</a>
+        <h2>Welcome!</h2>
       {{ end }}
     </div>
   </div>
