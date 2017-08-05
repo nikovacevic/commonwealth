@@ -1,20 +1,24 @@
 package handlers
 
 import (
-	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/nikovacevic/commonwealth/models"
 	"github.com/nikovacevic/commonwealth/views"
+	"github.com/nikovacevic/money"
 )
 
+var createProductView = views.NewView("default", "views/products/create.gohtml")
 var productsView = views.NewView("default", "views/products/index.gohtml")
-var productsCreateView = views.NewView("default", "views/products/create.gohtml")
+var updateProductView = views.NewView("default", "views/products/update.gohtml")
+var viewProductView = views.NewView("default", "views/products/view.gohtml")
 
-// GETProducts GET /products
-func (hdl *Handler) GETProducts(w http.ResponseWriter, r *http.Request) {
+// Products serves a listing of all products
+func (hdl *Handler) Products(w http.ResponseWriter, r *http.Request) {
 	rows, err := hdl.db.Query("SELECT id, description, is_active, name, price FROM products")
 	if err != nil {
 		log.Fatal(err)
@@ -44,17 +48,38 @@ func (hdl *Handler) GETProducts(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// GETProductsCreate GET /products/create
-func (hdl *Handler) GETProductsCreate(w http.ResponseWriter, r *http.Request) {
-	productsCreateView.Render(w, nil)
-}
-
-// POSTProductsCreate POST /products/create
-func (hdl *Handler) POSTProductsCreate(w http.ResponseWriter, r *http.Request) {
-	cost, err := strconv.ParseFloat(r.FormValue("cost"), 64)
+// ViewProduct serves details of the identified product
+func (hdl *Handler) ViewProduct(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.ParseUint(vars["id"], 10, 64)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	product, err := productService.ByID(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	viewProductView.Render(w, struct {
+		Product *models.Product
+	}{
+		product,
+	})
+}
+
+// CreateProduct serves a form for creating a new product
+func (hdl *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
+	createProductView.Render(w, nil)
+}
+
+// PostProduct attempts to create a product from the given request data
+func (hdl *Handler) PostProduct(w http.ResponseWriter, r *http.Request) {
+	c, err := strconv.ParseFloat(r.FormValue("cost"), 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+	cost := money.ToUSD(c)
 	description := r.FormValue("description")
 	isActive, err := strconv.ParseBool(r.FormValue("is_active"))
 	if err != nil {
@@ -62,12 +87,13 @@ func (hdl *Handler) POSTProductsCreate(w http.ResponseWriter, r *http.Request) {
 		isActive = false
 	}
 	name := r.FormValue("name")
-	price, err := strconv.ParseFloat(r.FormValue("price"), 64)
+	p, err := strconv.ParseFloat(r.FormValue("price"), 64)
 	if err != nil {
 		log.Fatal(err)
 	}
+	price := money.ToUSD(p)
 
-	product := models.Product{
+	product := &models.Product{
 		Cost:        cost,
 		Description: description,
 		IsActive:    isActive,
@@ -75,16 +101,72 @@ func (hdl *Handler) POSTProductsCreate(w http.ResponseWriter, r *http.Request) {
 		Price:       price,
 	}
 
-	ctx := context.Background()
-	stmt, err := hdl.db.PrepareContext(ctx, "INSERT INTO products (description, name, price, cost, is_active) VALUES ($1, $2, $3, $4, $5) RETURNING id")
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = stmt.ExecContext(ctx, product.Description, product.Name, product.Price, product.Cost, product.IsActive)
+	_, err = productService.Create(product)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	http.Redirect(w, r, "/products", http.StatusSeeOther)
+	return
+}
+
+// UpdateProduct serves a form for editing a product
+func (hdl *Handler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.ParseUint(vars["id"], 10, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	product, err := productService.ByID(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	data := struct {
+		Product *models.Product
+	}{
+		product,
+	}
+	updateProductView.Render(w, data)
+}
+
+// PatchProduct attempts to update a product from the given request data
+func (hdl *Handler) PatchProduct(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.ParseUint(vars["id"], 10, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	product, err := productService.ByID(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	cost, err := strconv.ParseFloat(r.FormValue("cost"), 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+	product.Cost = money.ToUSD(cost)
+	product.Description = r.FormValue("description")
+	product.IsActive, err = strconv.ParseBool(r.FormValue("is_active"))
+	if err != nil {
+		// TODO do better
+		product.IsActive = false
+	}
+	product.Name = r.FormValue("name")
+	price, err := strconv.ParseFloat(r.FormValue("price"), 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+	product.Price = money.ToUSD(price)
+
+	_, err = productService.Update(product)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("/products/%v", product.ID), http.StatusSeeOther)
 	return
 }

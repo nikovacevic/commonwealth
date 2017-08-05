@@ -24,68 +24,30 @@ func main() {
 	http.ListenAndServe(":3000", r)
 }
 
-// NewRouter returns a gorilla/mux Router with registered routing based on
-// var routes (see routes.go)
+// NewRouter creates a gorilla/mux Router, registers routes, and returns it.
 func NewRouter(h *handlers.Handler) *mux.Router {
 	r := mux.NewRouter()
 
 	// Register routes
 	routes := Routes{
 		// Index
-		Route{
-			"GET",
-			"/",
-			h.GETIndex,
-		},
+		Route{"GET", "/", h.GETIndex},
 		// Auth
-		Route{
-			"GET",
-			"/login",
-			h.GETLogin,
-		},
-		Route{
-			"POST",
-			"/login",
-			h.POSTLogin,
-		},
-		Route{
-			"GET",
-			"/register",
-			h.GETRegister,
-		},
-		Route{
-			"POST",
-			"/register",
-			h.POSTRegister,
-		},
+		Route{"GET", "/login", h.GETLogin},
+		Route{"POST", "/login", h.POSTLogin},
+		Route{"GET", "/register", h.GETRegister},
+		Route{"POST", "/register", h.POSTRegister},
 		// Admin
-		Route{
-			"GET",
-			"/admin",
-			h.GETAdmin,
-		},
+		Route{"GET", "/admin", h.GETAdmin},
 		// Users
-		Route{
-			"GET",
-			"/users",
-			h.GETUsers,
-		},
+		Route{"GET", "/users", h.GETUsers},
 		// Products
-		Route{
-			"GET",
-			"/products",
-			h.GETProducts,
-		},
-		Route{
-			"GET",
-			"/products/create",
-			h.GETProductsCreate,
-		},
-		Route{
-			"POST",
-			"/products/create",
-			h.POSTProductsCreate,
-		},
+		Route{"GET", "/products", h.Products},
+		Route{"GET", "/products/{id:[0-9]+}", h.ViewProduct},
+		Route{"GET", "/products/create", h.CreateProduct},
+		Route{"POST", "/products/create", h.PostProduct},
+		Route{"GET", "/products/{id:[0-9]+}/update", h.UpdateProduct},
+		Route{"POST", "/products/{id:[0-9]+}/update", h.PatchProduct},
 	}
 
 	for _, route := range routes {

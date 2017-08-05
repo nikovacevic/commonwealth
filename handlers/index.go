@@ -5,7 +5,10 @@ import (
 	"net/http"
 
 	"github.com/nikovacevic/commonwealth/models"
+	"github.com/nikovacevic/commonwealth/views"
 )
+
+var indexView = views.NewView("default", "views/index.gohtml")
 
 // GETIndex GET /
 func (hdl *Handler) GETIndex(w http.ResponseWriter, r *http.Request) {

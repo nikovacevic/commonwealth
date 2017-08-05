@@ -9,7 +9,11 @@ import (
 	_ "github.com/lib/pq" // postgres driver
 	"github.com/nikovacevic/commonwealth/auth"
 	"github.com/nikovacevic/commonwealth/models"
+	"github.com/nikovacevic/commonwealth/views"
 )
+
+var loginView = views.NewView("default", "views/auth/login.gohtml")
+var registerView = views.NewView("default", "views/auth/register.gohtml")
 
 type emailTakenError struct {
 	email string
@@ -82,7 +86,7 @@ func (hdl *Handler) POSTRegister(w http.ResponseWriter, r *http.Request) {
 		PasswordHash: string(hash),
 	}
 
-	user, err = userService.Create(user)
+	_, err = userService.Create(user)
 	if err != nil {
 		log.Fatal(err)
 	}

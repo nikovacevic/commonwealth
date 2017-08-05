@@ -17,6 +17,10 @@ type Handler struct {
 var hdl *Handler
 var sess *sessions.SessionHandler
 
+// Services
+var productService *services.ProductService
+var userService *services.UserService
+
 func init() {
 	// TODO toggle SSL disable with config
 	// TODO grab DB credentials from config
@@ -27,6 +31,7 @@ func init() {
 
 	hdl = &Handler{db: db}
 
+	productService = services.NewProduct(hdl.db)
 	userService = services.NewUser(hdl.db)
 
 	sess = sessions.GetSessionHandler()
